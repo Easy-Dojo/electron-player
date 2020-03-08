@@ -1,3 +1,9 @@
+const { ipcRenderer } = require("electron");
+
 window.addEventListener('DOMContentLoaded', () => {
-    alert(process.version)
+    ipcRenderer.send('message', 'message from renderer')
+
+    ipcRenderer.on('reply', (event, arg) => {
+        document.getElementById("message").innerHTML = arg
+      })
 })

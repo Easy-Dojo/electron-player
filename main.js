@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 function createWindow() {
@@ -12,6 +12,11 @@ function createWindow() {
   });
 
   mainWindow.loadFile("index.html");
+
+  ipcMain.on('message', (event, arg) => {
+    console.log(arg)
+    event.sender.send('reply', 'Hello from main!')
+  })
 }
 
 app.on("ready", createWindow);
