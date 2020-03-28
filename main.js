@@ -1,5 +1,10 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
+const DataStore = require('./MusicDataStore')
+
+const myStore = new DataStore({
+  name: 'Music Data'
+})
 
 class AppWindow extends BrowserWindow {
   constructor(config, fileLocation) {
@@ -19,7 +24,7 @@ class AppWindow extends BrowserWindow {
   }
 }
 
-function createWindow() {
+function main() {
   const mainWindow = new AppWindow(null, "./renderer/index.html")
 
   ipcMain.on('add-music-window', () => {
@@ -28,6 +33,12 @@ function createWindow() {
       height: 300,
       parent: mainWindow
     }, "./renderer/add.html");
+  })
+
+  ipcMain.on('add-tracks', (event, tracks)=>{
+    console.log(tracks)
+    const updatedTracks = myStore.addTracks(tracks).getTracks()
+    console.log(updatedTracks)
   })
 
   ipcMain.on('open-music-file', (event) => {
@@ -42,7 +53,7 @@ function createWindow() {
   })
 }
 
-app.on("ready", createWindow);
+app.on("ready", main);
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
