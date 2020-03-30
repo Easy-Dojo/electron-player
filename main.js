@@ -39,8 +39,12 @@ function main () {
   })
 
   ipcMain.on('add-tracks', (event, tracks) => {
-    console.log(tracks)
     const updatedTracks = myStore.addTracks(tracks).getTracks()
+    mainWindow.send('getTracks', updatedTracks)
+  })
+
+  ipcMain.on('delete-track', (event, id) => {
+    const updatedTracks = myStore.deleteTrack(id).getTracks()
     mainWindow.send('getTracks', updatedTracks)
   })
 
